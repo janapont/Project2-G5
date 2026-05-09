@@ -25,3 +25,5 @@ class InvalidMileageError(Exception):
 
 class MileageCannotDecreaseError(Exception):
     pass
+
+#users exceptions

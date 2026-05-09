@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import date
-from exceptions import InvalidName, InvalidDateOfBirth
+from custom_exceptions import InvalidName, InvalidDateOfBirth
 
 class User(ABC):
     __counter = 0
