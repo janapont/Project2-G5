@@ -1,6 +1,6 @@
 from unittest import TestCase
 from datetime import date
-from users import User
+from users.users import User
 from custom_exceptions import InvalidName, InvalidDateOfBirth
 
 class ConcreteUser(User):    #  PORQUE LA CLASS USERS ES ABSTRACT Y NO PODEMOS CREAR OBJETOS

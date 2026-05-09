@@ -1,4 +1,4 @@
-from users import User
+from users.users import User
 from custom_exceptions import InvalidRole
 
 ROLES = ["mechanic", "rental manager", "administrator"]
