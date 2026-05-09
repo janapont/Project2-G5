@@ -1,1 +1,79 @@
-"""Vehicle abstract base class."""
+from abc import ABC, abstractmethod
+from exceptions.custom_exceptions import(
+    InvalidLicensePlateError,
+    InvalidMatriculationDateError,
+    InvalidMileageError,
+    MileageCannotDecreaseError,
+)
+
+from datetime import date
+
+class Vehicle(ABC):
+    def __init__(self, brand, color, license_plate, model, matriculation_date, mileage):
+        if mileage < 0:
+            raise InvalidMileageError()
+        if (len(license_plate) != 7  or not license_plate[:4].isdigit() or not license_plate[4:].isalpha()  or not license_plate[4:].isupper()):
+            raise InvalidLicensePlateError()
+        if matriculation_date > date.today():
+            raise InvalidMatriculationDateError()
+                
+        self.__brand = brand
+        self.__color = color
+        self.__license_plate = license_plate
+        self.__model = model
+        self.__matriculation_date = matriculation_date
+        self.__mileage = mileage
+
+    @abstractmethod
+    def calculate_ITV(self):
+        pass
+
+    @abstractmethod
+    def maintenance_schedule(self):
+        pass
+
+    def update_info(self, brand=None, color=None, model=None, mileage=None):
+        if brand is not None:
+            self.__brand = brand
+        if color is not None:
+            self.__color = color
+        if model is not None:
+            self.__model = model
+        if mileage is not None:
+            if not isinstance(mileage, int) or mileage < 0:
+                raise InvalidMileageError()
+            if mileage < self.__mileage:
+                raise MileageCannotDecreaseError()
+            self.__mileage = mileage
+            
+    def get_age_years(self):
+        today = date.today()
+        matric = self.__matriculation_date
+        years = today.year - matric.year
+        if (today.month, today.day) < (matric.month, matric.day):
+            years -= 1
+        return years
+
+    def _add_years(self, date, years): #per afegir anys a una data
+        try:
+            return date.replace(year=date.year + years)
+        except ValueError:
+            return date.replace(year=date.year + years, day=28) #per si és el 29 de febrer i el any que toca no es leap year
+        
+    def get_brand(self):
+        return self.__brand
+
+    def get_color(self):
+        return self.__color
+
+    def get_license_plate(self):
+        return self.__license_plate
+
+    def get_model(self):
+        return self.__model
+
+    def get_matriculation_date(self):
+        return self.__matriculation_date
+
+    def get_mileage(self):
+        return self.__mileage
