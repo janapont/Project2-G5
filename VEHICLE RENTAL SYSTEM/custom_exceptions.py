@@ -27,3 +27,17 @@ class MileageCannotDecreaseError(Exception):
     pass
 
 #users exceptions
+class InvalidDateOfBirth(Exception):
+    pass
+
+class InvalidName(Exception):
+    pass
+
+class VehicleAlreadyRegistered(Exception):
+    pass
+
+class VehicleNotFound(Exception):
+    pass
+
+class InvalidRole(Exception):
+    pass
