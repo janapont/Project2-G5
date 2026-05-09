@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from custom_exceptions import(
+from exceptions.custom_exceptions import(
     InvalidLicensePlateError,
     InvalidMatriculationDateError,
     InvalidMileageError,
@@ -10,7 +10,7 @@ from datetime import date
 
 class Vehicle(ABC):
     def __init__(self, brand, color, license_plate, model, matriculation_date, mileage):
-        if mileage < 0:
+        if not isinstance(mileage, int) or mileage < 0:
             raise InvalidMileageError()
         if (len(license_plate) != 7  or not license_plate[:4].isdigit() or not license_plate[4:].isalpha()  or not license_plate[4:].isupper()):
             raise InvalidLicensePlateError()
@@ -23,6 +23,8 @@ class Vehicle(ABC):
         self.__model = model
         self.__matriculation_date = matriculation_date
         self.__mileage = mileage
+        self.__last_maintenance_date = None      # se actualiza cuando hace mantenimiento
+        self.__last_maintenance_mileage = None
 
     @abstractmethod
     def calculate_ITV(self):
@@ -54,12 +56,25 @@ class Vehicle(ABC):
             years -= 1
         return years
 
-    def _add_years(self, date, years): #per afegir anys a una data
+    def _add_years(self, base_date, years): #per afegir anys a una data
         try:
-            return date.replace(year=date.year + years)
+            return base_date.replace(year=base_date.year + years)
         except ValueError:
-            return date.replace(year=date.year + years, day=28) #per si és el 29 de febrer i el any que toca no es leap year
+            return base_date.replace(year=base_date.year + years, day=28) #per dies que no existeixen al mes (tots els messos tenen al menys 28)
         
+    def _add_months(self, base_date, months): #per afegir mesos a una data
+        total = base_date.month - 1 + months
+        new_year = base_date.year + total // 12
+        new_month = total % 12 + 1
+        try:
+            return base_date.replace(year=new_year, month=new_month)
+        except ValueError:
+            return base_date.replace(year=new_year, month=new_month, day=28) #per dies que no existeixen al mes (tots els messos tenen al menys 28)
+        
+    def register_maintenance(self, date, km):
+        self.__last_maintenance_date = date
+        self.__last_maintenance_mileage = km
+
     def get_brand(self):
         return self.__brand
 
@@ -77,3 +92,9 @@ class Vehicle(ABC):
 
     def get_mileage(self):
         return self.__mileage
+    
+    def get_last_maintenance_date(self):
+        return self.__last_maintenance_date
+    
+    def get_last_maintenance_mileage(self):
+        return self.__last_maintenance_mileage
