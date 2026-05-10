@@ -14,7 +14,9 @@ class Vehicle(ABC):
             raise InvalidMileageError()
         if (len(license_plate) != 7  or not license_plate[:4].isdigit() or not license_plate[4:].isalpha()  or not license_plate[4:].isupper()):
             raise InvalidLicensePlateError()
-        if matriculation_date > date.today():
+        if not isinstance(license_plate, str):
+            raise InvalidLicensePlateError()
+        if not isinstance(matriculation_date, date) or matriculation_date > date.today():
             raise InvalidMatriculationDateError()
                 
         self.__brand = brand
