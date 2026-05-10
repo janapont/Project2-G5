@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run DICE_SIMULATOR",
+            "type": "python",
+            "request": "launch",
+            "module": "DICE_SIMULATOR.main",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
