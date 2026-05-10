@@ -1,5 +1,5 @@
 import numpy as np
-from .exceptions import InvalidNumberOfThrowsError, InvalidNumberOfDiceError
+from DICE_SIMULATOR.exceptions import InvalidNumberOfThrowsError, InvalidNumberOfDiceError
 
 
 class DiceSimulator:

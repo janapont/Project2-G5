@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-from . import statistics as stats
+from DICE_SIMULATOR import statistics as stats
 
 
-def plot_distribution(simulator):
+def plot_distribution(simulator, save_path=None):
     values, counts = stats.get_distribution(simulator)
     plt.figure()
     plt.bar(values, counts)
@@ -10,10 +10,14 @@ def plot_distribution(simulator):
     plt.xlabel("Result")
     plt.ylabel("Frequency")
     plt.grid(axis="y")
-    plt.show()
+    if save_path:
+        plt.savefig(save_path)
+        plt.close()
+    else:
+        plt.show()
 
 
-def plot_single_dice(simulator):
+def plot_single_dice(simulator, save_path=None):
     values, counts = stats.single_dice_distribution(simulator)
     plt.figure()
     plt.bar(values, counts)
@@ -21,10 +25,14 @@ def plot_single_dice(simulator):
     plt.xlabel("Face")
     plt.ylabel("Frequency")
     plt.grid(axis="y")
-    plt.show()
+    if save_path:
+        plt.savefig(save_path)
+        plt.close()
+    else:
+        plt.show()
 
 
-def plot_pairs_vs_odds(simulator):
+def plot_pairs_vs_odds(simulator, save_path=None):
     pairs = stats.percentage_of_pairs(simulator)
     odds = stats.percentage_of_odds(simulator)
     plt.figure()
@@ -32,10 +40,14 @@ def plot_pairs_vs_odds(simulator):
     plt.title("Pairs vs Odds")
     plt.ylabel("Percentage (%)")
     plt.grid(axis="y")
-    plt.show()
+    if save_path:
+        plt.savefig(save_path)
+        plt.close()
+    else:
+        plt.show()
 
 
-def plot_doubles(simulator):
+def plot_doubles(simulator, save_path=None):
     if simulator.get_n_dice() == 1:
         return
     doubles = stats.percentage_of_doubles(simulator)
@@ -45,4 +57,8 @@ def plot_doubles(simulator):
     plt.title("Doubles vs Non-doubles")
     plt.ylabel("Percentage (%)")
     plt.grid(axis="y")
-    plt.show()
+    if save_path:
+        plt.savefig(save_path)
+        plt.close()
+    else:
+        plt.show()
