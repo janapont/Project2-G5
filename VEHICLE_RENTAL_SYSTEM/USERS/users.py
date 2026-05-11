@@ -4,14 +4,21 @@ from custom_exceptions import InvalidName, InvalidDateOfBirth
 
 class User(ABC):
     __counter = 0
-
-    def __init__(self, name, date_of_birth):
+    
+    def __init__(self, name, date_of_birth, user_id=None):
         self.validate_name(name)
         self.validate_date_of_birth(date_of_birth)
-        User.__counter += 1
+
+        if user_id is None:
+            User.__counter += 1
+            self.__id = User.__counter
+        else:
+            self.__id = user_id
+            if user_id > User.__counter:
+                User.__counter = user_id
+
         self.__name = name
         self.__date_of_birth = date_of_birth
-        self.__id = User.__counter
 
     def get_name(self):
         return self.__name

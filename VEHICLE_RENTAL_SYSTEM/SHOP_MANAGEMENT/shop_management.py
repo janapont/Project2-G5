@@ -188,4 +188,4 @@ class ShopManagement:
         self.load_vehicles_csv()
         self.load_clients_csv()
         self.load_workers_csv()
-        self.load_rentals_csv()
+        self.load_rentals_csv(self.find_vehicle, self.find_client)

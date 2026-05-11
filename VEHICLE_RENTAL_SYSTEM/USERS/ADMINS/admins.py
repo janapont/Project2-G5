@@ -5,8 +5,8 @@ from custom_exceptions import InvalidRole
 ROLES = ["mechanic", "rental manager", "administrator"]
 
 class Admin(User):
-    def __init__(self, name, date_of_birth, role):
-        super().__init__(name, date_of_birth)
+    def __init__(self, name, date_of_birth, role, user_id=None):
+        super().__init__(name, date_of_birth, user_id)
         self.validate_role(role)
         self.__role = role
 
@@ -35,11 +35,12 @@ class Admin(User):
 
 def admin_from_csv_line(line):
     from datetime import date
+
     parts = line.strip().split(",")
 
-    name = parts[0]
-    date_of_birth = date.fromisoformat(parts[1])
-    user_id = parts[2]
+    user_id = int(parts[0])
+    name = parts[1]
+    date_of_birth = date.fromisoformat(parts[2])
     role = parts[3]
 
-    return Admin(name, date_of_birth, user_id, role)
+    return Admin(name, date_of_birth, role, user_id)

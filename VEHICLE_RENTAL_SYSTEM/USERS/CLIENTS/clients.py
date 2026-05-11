@@ -2,8 +2,8 @@ from USERS.users import User
 from custom_exceptions import VehicleAlreadyRegistered, VehicleNotFound
 
 class Client(User):
-    def __init__(self, name, date_of_birth):
-        super().__init__(name, date_of_birth)
+    def __init__(self, name, date_of_birth, user_id=None):
+        super().__init__(name, date_of_birth, user_id)
         self.__vehicles = []
 
     def get_type(self):
@@ -63,11 +63,12 @@ class Client(User):
 
 def client_from_csv_line(line, vehicles):
     from datetime import date
+
     parts = line.strip().split(",")
 
-    name = parts[0]
-    date_of_birth = date.fromisoformat(parts[1])
-    user_id = parts[2]
+    user_id = int(parts[0])
+    name = parts[1]
+    date_of_birth = date.fromisoformat(parts[2])
 
     client = Client(name, date_of_birth, user_id)
 

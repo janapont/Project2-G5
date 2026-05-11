@@ -36,9 +36,6 @@ class InvalidName(Exception):
 class VehicleAlreadyRegistered(Exception):
     pass
 
-class VehicleNotFound(Exception):
-    pass
-
 class InvalidRole(Exception):
     pass
 
