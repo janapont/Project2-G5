@@ -1,4 +1,3 @@
-"""Unit tests for the ShopManagement class."""
 import os
 import tempfile
 import unittest
@@ -276,7 +275,7 @@ class TestShopManagementCsv(unittest.TestCase):
         self.assertEqual(self.shop.get_rentals(), [])
 
     def test_save_and_load_all_csv(self):
-        car = Car("Seat", "Red", "1234ABC", "Ibiza", date(2020, 1, 1), 10000)
+        car = Car("Seat", "Red", "1234ABC", "Ibiza", date(2020, 1, 1), 15000)
         car.register_maintenance(date(2024, 1, 1), 12000)
         client = Client("Anna", date(2000, 1, 1), 1)
         client.add_vehicle(car)
@@ -373,5 +372,93 @@ class TestShopManagementCsv(unittest.TestCase):
         self.assertIn("R1,1234ABC,1,2025-01-01,2025-01-10,500,0,basic", rentals_text)
 
 
-if __name__ == "__main__":
-    unittest.main()
+class TestShopManagementUpdateMethods(unittest.TestCase):
+
+    def setUp(self):
+        self.shop = ShopManagement()
+        self.car = Car("Seat", "Red", "1234ABC", "Ibiza", date(2020, 1, 1), 10000)
+        self.client = Client("Anna", date(2000, 1, 1), 1)
+        self.worker = Admin("Worker", date(1990, 1, 1), "mechanic", 2)
+        self.rental = Rental(
+            "R1",
+            self.car,
+            self.client,
+            date.today() - timedelta(days=1),
+            date.today() + timedelta(days=1),
+            500,
+            "basic",
+        )
+        self.shop.add_vehicle(self.car)
+        self.shop.add_client(self.client)
+        self.shop.add_worker(self.worker)
+        self.shop.add_rental(self.rental)
+
+    def test_update_vehicle_info(self):
+        self.shop.update_vehicle_info("1234ABC", brand="Audi", color="Blue", model="A3", mileage=12000)
+
+        self.assertEqual(self.car.get_brand(), "Audi")
+        self.assertEqual(self.car.get_color(), "Blue")
+        self.assertEqual(self.car.get_model(), "A3")
+        self.assertEqual(self.car.get_mileage(), 12000)
+
+    def test_register_vehicle_maintenance(self):
+        self.shop.register_vehicle_maintenance("1234ABC", date(2024, 1, 1), 9000)
+
+        self.assertEqual(self.car.get_last_maintenance_date(), date(2024, 1, 1))
+        self.assertEqual(self.car.get_last_maintenance_mileage(), 9000)
+
+    def test_update_client_info(self):
+        self.shop.update_client_info(1, name="Anna Updated", date_of_birth=date(2001, 2, 2))
+
+        self.assertEqual(self.client.get_name(), "Anna Updated")
+        self.assertEqual(self.client.get_date_of_birth(), date(2001, 2, 2))
+
+    def test_register_vehicle_to_client(self):
+        self.shop.register_vehicle_to_client(1, "1234ABC")
+
+        self.assertEqual(self.client.get_vehicles()[0].get_license_plate(), "1234ABC")
+
+    def test_remove_vehicle_from_client(self):
+        self.client.add_vehicle(self.car)
+
+        self.shop.remove_vehicle_from_client(1, "1234ABC")
+
+        self.assertEqual(self.client.get_vehicles(), [])
+
+    def test_update_client_vehicle_kms(self):
+        self.client.add_vehicle(self.car)
+
+        self.shop.update_client_vehicle_kms(1, "1234ABC", 15000)
+
+        self.assertEqual(self.car.get_mileage(), 15000)
+
+    def test_get_client_vehicle_next_itv(self):
+        self.client.add_vehicle(self.car)
+
+        result = self.shop.get_client_vehicle_next_itv(1, "1234ABC")
+
+        self.assertIsInstance(result, date)
+
+    def test_get_client_vehicle_next_maintenance(self):
+        self.client.add_vehicle(self.car)
+
+        result = self.shop.get_client_vehicle_next_maintenance(1, "1234ABC")
+
+        self.assertIsInstance(result, date)
+
+    def test_update_worker_info(self):
+        self.shop.update_worker_info(2, name="Worker Updated", date_of_birth=date(1991, 3, 3), role="administrator")
+
+        self.assertEqual(self.worker.get_name(), "Worker Updated")
+        self.assertEqual(self.worker.get_date_of_birth(), date(1991, 3, 3))
+        self.assertEqual(self.worker.get_role(), "administrator")
+
+    def test_add_kms_to_rental(self):
+        self.shop.add_kms_to_rental("R1", 100)
+
+        self.assertEqual(self.rental.get_kms_done(), 100)
+
+    def test_update_rental_assurance(self):
+        self.shop.update_rental_assurance("R1", "premium")
+
+        self.assertEqual(self.rental.get_assurance(), "premium")

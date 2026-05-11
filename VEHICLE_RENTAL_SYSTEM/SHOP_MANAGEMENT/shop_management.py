@@ -102,6 +102,8 @@ class ShopManagement:
         return active
 
     def load_rentals_csv(self, vehicle_lookup, user_lookup):
+        self.__rentals = []
+        
         if not os.path.exists(self.__csv_path):
             return
         f = open(self.__csv_path, "r")

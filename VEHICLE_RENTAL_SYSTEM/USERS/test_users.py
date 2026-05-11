@@ -3,7 +3,7 @@ from datetime import date
 from USERS.users import User
 from custom_exceptions import InvalidName, InvalidDateOfBirth
 
-class ConcreteUser(User):    #  PORQUE LA CLASS USERS ES ABSTRACT Y NO PODEMOS CREAR OBJETOS
+class ConcreteUser(User):
     def get_type(self):
         return "concrete"
 
@@ -52,6 +52,23 @@ class TestUser(TestCase):
                 expected_age -= 1
         self.assertEqual(user.get_age(), expected_age)
     
+    def test_get_age_when_birthday_is_later_this_month(self):
+        today = date.today()
+        day = today.day + 1
+        month = today.month
+        year = today.year - 20
+
+        if day > 28:
+            day = 28
+            if today.day >= 28:
+                month = today.month + 1
+                if month > 12:
+                    month = 1
+                    year = year + 1
+
+        user = ConcreteUser("Ana Garcia", date(year, month, day))
+        self.assertEqual(user.get_age(), 19)
+
     def test_update_name(self):
         user = ConcreteUser("Ana Garcia", date(2007, 6, 20))
         user.update_name("Ana Gomez")
@@ -65,3 +82,11 @@ class TestUser(TestCase):
     def test_get_type(self):
         user = ConcreteUser("Ana Garcia", date(2007, 6, 20))
         self.assertEqual(user.get_type(), "concrete")
+
+    def test_to_csv_line(self):
+        user = ConcreteUser("Ana Garcia", date(2007, 6, 20), 50)
+        self.assertEqual(user.to_csv_line(), "50,Ana Garcia,2007-06-20")
+
+    def test_abstract_get_type_body_returns_none_when_called_directly(self):
+        user = ConcreteUser("Ana Garcia", date(2007, 6, 20))
+        self.assertIsNone(User.get_type(user))
