@@ -1,6 +1,6 @@
 from unittest import TestCase
 from datetime import date
-from users.ADMINS.admins import Admin
+from USERS.ADMINS.admins import Admin
 from custom_exceptions import InvalidRole
 
 class TestAdmin(TestCase):

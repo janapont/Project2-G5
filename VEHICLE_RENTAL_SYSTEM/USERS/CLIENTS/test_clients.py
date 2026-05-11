@@ -1,7 +1,7 @@
 from unittest import TestCase
 from datetime import date
-from users.CLIENTS.clients import Client
-from vehicles.CAR.car import Car
+from USERS.CLIENTS.clients import Client
+from VEHICLES.CAR.car import Car
 from custom_exceptions import VehicleAlreadyRegistered, VehicleNotFound
 
 # ESPERAR A TENIR LA FILE DE VEHICLES.PY

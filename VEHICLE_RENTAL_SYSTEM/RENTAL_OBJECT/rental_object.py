@@ -7,7 +7,6 @@ from custom_exceptions import (
     KmsExceeded,
 )
 
-
 class Rental:
     def __init__(self, rental_id, vehicle, user, start_date, end_date, kms_allowed, assurance):
         if not isinstance(start_date, date) or not isinstance(end_date, date) or end_date <= start_date:

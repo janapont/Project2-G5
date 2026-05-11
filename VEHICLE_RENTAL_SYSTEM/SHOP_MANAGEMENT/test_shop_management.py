@@ -8,7 +8,6 @@ from VEHICLES.CAR.car import Car
 from VEHICLES.MOTORBIKE.motorbike import Motorbike
 from VEHICLES.TRUCK.truck import Truck
 
-
 class TestShopManagementDuplicateLicensePlates(unittest.TestCase):
 
     def setUp(self):

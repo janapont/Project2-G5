@@ -1,4 +1,4 @@
-from users.users import User
+from USERS.users import User
 from custom_exceptions import VehicleAlreadyRegistered, VehicleNotFound
 
 class Client(User):
