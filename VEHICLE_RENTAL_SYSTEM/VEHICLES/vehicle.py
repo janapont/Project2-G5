@@ -75,6 +75,11 @@ class Vehicle(ABC):
             return base_date.replace(year=new_year, month=new_month, day=28) #per dies que no existeixen al mes (tots els messos tenen al menys 28)
         
     def register_maintenance(self, d, km):
+        if not isinstance(d, date) or d < self.__matriculation_date or d > date.today():
+            raise InvalidMatriculationDateError()
+        if not isinstance(km, int) or isinstance(km, bool) or km < 0 or km > self.__mileage:
+            raise InvalidMileageError()
+
         self.__last_maintenance_date = d
         self.__last_maintenance_mileage = km
 
