@@ -2,6 +2,8 @@ import os
 from datetime import date
 from RENTAL_OBJECT.rental_object import Rental
 from VEHICLES.vehicle import vehicle_from_csv_line
+from USERS.CLIENTS.clients import client_from_csv_line
+from USERS.ADMINS.admins import admin_from_csv_line
 from custom_exceptions import (
     ClientAlreadyExists,
     ClientNotFound,
@@ -9,17 +11,20 @@ from custom_exceptions import (
     WorkerNotFound,
     RentalAlreadyExists,
     RentalNotFound,
-    VehicleAlreadyRegistered
+    VehicleAlreadyRegistered,
+    VehicleNotFound
 )
 
 class ShopManagement:
-    def __init__(self, csv_path="DATABASE/rentals.csv", vehicles_csv_path="DATABASE/vehicles.csv"):
+    def __init__(self, csv_path="DATABASE/rentals.csv",vehicles_csv_path="DATABASE/vehicles.csv",clients_csv_path="DATABASE/clients.csv",workers_csv_path="DATABASE/admins.csv"):
         self.__clients = []
         self.__workers = []
         self.__rentals = []
         self.__vehicles = []
         self.__csv_path = csv_path
         self.__vehicles_csv_path = vehicles_csv_path
+        self.__clients_csv_path = clients_csv_path
+        self.__workers_csv_path = workers_csv_path
 
     def get_clients(self):
         return self.__clients
@@ -65,6 +70,12 @@ class ShopManagement:
             if r.get_rental_id() == rental_id:
                 return r
         raise RentalNotFound()
+    
+    def find_vehicle(self, license_plate):
+        for vehicle in self.__vehicles:
+            if vehicle.get_license_plate() == license_plate:
+                return vehicle
+        raise VehicleNotFound()
 
     def remove_rental(self, rental_id):
         for r in self.__rentals:
@@ -87,7 +98,7 @@ class ShopManagement:
             f.write(r.to_csv_line() + "\n")
         f.close()
 
-    def load_csv(self, vehicle_lookup, user_lookup):
+    def load_rentals_csv(self, vehicle_lookup, user_lookup):
         if not os.path.exists(self.__csv_path):
             return
         f = open(self.__csv_path, "r")
@@ -139,3 +150,42 @@ class ShopManagement:
             vehicle = vehicle_from_csv_line(lines[i])
             self.add_vehicle(vehicle)
             
+    def load_clients_csv(self):
+        if not os.path.exists(self.__clients_csv_path):
+            return
+
+        f = open(self.__clients_csv_path, "r")
+        lines = f.readlines()
+        f.close()
+
+        self.__clients = []
+
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "":
+                continue
+
+            client = client_from_csv_line(lines[i], self.__vehicles)
+            self.add_client(client)
+    
+    def load_workers_csv(self):
+        if not os.path.exists(self.__workers_csv_path):
+            return
+
+        f = open(self.__workers_csv_path, "r")
+        lines = f.readlines()
+        f.close()
+
+        self.__workers = []
+
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "":
+                continue
+
+            admin = admin_from_csv_line(lines[i])
+            self.add_worker(admin)
+
+    def load_all_csv(self):
+        self.load_vehicles_csv()
+        self.load_clients_csv()
+        self.load_workers_csv()
+        self.load_rentals_csv()

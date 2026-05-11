@@ -76,3 +76,6 @@ class RentalAlreadyExists(Exception):
 
 class RentalNotFound(Exception):
     pass
+
+class VehicleNotFound(Exception):
+    pass

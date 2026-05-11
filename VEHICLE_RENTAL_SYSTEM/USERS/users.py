@@ -52,6 +52,9 @@ class User(ABC):
         self.validate_date_of_birth(date_of_birth)
         self.__date_of_birth = date_of_birth
 
+    def to_csv_line(self):
+        return f"{self.get_id()},{self.get_name()},{self.get_date_of_birth().isoformat()}"
+
     @abstractmethod
     def get_type(self):    # TO APPLY POLYMORPHISM
         pass

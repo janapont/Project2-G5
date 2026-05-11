@@ -43,3 +43,39 @@ class Client(User):
             if v.get_license_plate() == license_plate:
                 return v.maintenance_schedule()
         raise VehicleNotFound(f"Vehicle with plate {license_plate} not found.")
+    
+    def to_csv_line(self):
+        plates = []
+
+        for vehicle in self.get_vehicles():
+            plates.append(vehicle.get_license_plate())
+
+        plates_text = "|".join(plates)
+
+        return (
+            f"{self.get_id()},"
+            f"{self.get_name()},"
+            f"{self.get_date_of_birth().isoformat()},"
+            f"{plates_text}"
+        )
+    
+
+
+def client_from_csv_line(line, vehicles):
+    parts = line.strip().split(",")
+
+    name = parts[0]
+    date_of_birth = date.fromisoformat(parts[1])
+    user_id = parts[2]
+
+    client = Client(name, date_of_birth, user_id)
+
+    if len(parts) > 3 and parts[3] != "":
+        plates = parts[3].split("|")
+
+        for plate in plates:
+            for vehicle in vehicles:
+                if vehicle.get_license_plate() == plate:
+                    client.add_vehicle(vehicle)
+
+    return client

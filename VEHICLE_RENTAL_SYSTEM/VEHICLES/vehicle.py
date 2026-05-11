@@ -146,17 +146,10 @@ def vehicle_from_csv_line(line):
     mileage = int(parts[6])
 
     if vehicle_type == "Car":
-        vehicle = Car(brand, color, license_plate, model, matriculation_date, mileage)
+        return Car(brand, color, license_plate, model, matriculation_date, mileage)
     elif vehicle_type == "Motorbike":
-        vehicle = Motorbike(brand, color, license_plate, model, matriculation_date, mileage)
+        return Motorbike(brand, color, license_plate, model, matriculation_date, mileage)
     elif vehicle_type == "Truck":
-        vehicle = Truck(brand, color, license_plate, model, matriculation_date, mileage)
+        return Truck(brand, color, license_plate, model, matriculation_date, mileage)
     else:
         raise ValueError("Invalid vehicle type")
-
-    if len(parts) > 8 and parts[7] != "" and parts[8] != "":
-        last_maintenance_date = date.fromisoformat(parts[7])
-        last_maintenance_mileage = int(parts[8])
-        vehicle.register_maintenance(last_maintenance_date, last_maintenance_mileage)
-
-    return vehicle
