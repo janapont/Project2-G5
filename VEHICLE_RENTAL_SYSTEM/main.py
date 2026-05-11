@@ -14,4 +14,7 @@ maintenance km sea un int positivo
 maintenance km no sea mayor que el mileage actual, salvo que antes actualicéis el mileage
 maintenance km no sea negativo
 
+En el main, los vehículos siempre se añaden primero desde ShopManagement.
+Después, si son vehículos de un cliente, se registran también en ese cliente.
+
 """

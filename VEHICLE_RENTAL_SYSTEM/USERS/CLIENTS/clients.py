@@ -28,7 +28,7 @@ class Client(User):
     def update_vehicle_kms(self, license_plate, kms):
         for v in self.__vehicles:
             if v.get_license_plate() == license_plate:
-                v.update_info(kms)
+                v.update_info(mileage=kms)
                 return
         raise VehicleNotFound(f"Vehicle with plate {license_plate} not found.")
 

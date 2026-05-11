@@ -1,6 +1,7 @@
 import os
 from datetime import date
 from RENTAL_OBJECT.rental_object import Rental
+from VEHICLES.vehicle import vehicle_from_csv_line
 from custom_exceptions import (
     ClientAlreadyExists,
     ClientNotFound,
@@ -12,12 +13,13 @@ from custom_exceptions import (
 )
 
 class ShopManagement:
-    def __init__(self, csv_path="DATABASE/rentals.csv"):
+    def __init__(self, csv_path="DATABASE/rentals.csv", vehicles_csv_path="DATABASE/vehicles.csv"):
         self.__clients = []
         self.__workers = []
         self.__rentals = []
         self.__vehicles = []
         self.__csv_path = csv_path
+        self.__vehicles_csv_path = vehicles_csv_path
 
     def get_clients(self):
         return self.__clients
@@ -109,4 +111,31 @@ class ShopManagement:
 
     def get_vehicles(self):
         return self.__vehicles
-        
+    
+    def save_vehicles_csv(self):
+        f = open(self.__vehicles_csv_path, "w")
+        f.write("type,brand,color,license_plate,model,matriculation_date,mileage,last_maintenance_date,last_maintenance_mileage\n")
+
+        for vehicle in self.__vehicles:
+            f.write(vehicle.to_csv_line() + "\n")
+
+        f.close()
+
+
+    def load_vehicles_csv(self):
+        if not os.path.exists(self.__vehicles_csv_path):
+            return
+
+        f = open(self.__vehicles_csv_path, "r")
+        lines = f.readlines()
+        f.close()
+
+        self.__vehicles = []
+
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "":
+                continue
+
+            vehicle = vehicle_from_csv_line(lines[i])
+            self.add_vehicle(vehicle)
+            

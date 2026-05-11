@@ -78,6 +78,33 @@ class Vehicle(ABC):
         self.__last_maintenance_date = d
         self.__last_maintenance_mileage = km
 
+
+    def to_csv_line(self):
+        last_date = self.get_last_maintenance_date()
+        last_km = self.get_last_maintenance_mileage()
+
+        if last_date is None:
+            last_date_text = ""
+        else:
+            last_date_text = last_date.isoformat()
+
+        if last_km is None:
+            last_km_text = ""
+        else:
+            last_km_text = str(last_km)
+
+        return (
+            f"{self.__class__.__name__},"
+            f"{self.get_brand()},"
+            f"{self.get_color()},"
+            f"{self.get_license_plate()},"
+            f"{self.get_model()},"
+            f"{self.get_matriculation_date().isoformat()},"
+            f"{self.get_mileage()},"
+            f"{last_date_text},"
+            f"{last_km_text}"
+        )
+        
     def get_brand(self):
         return self.__brand
 
@@ -101,3 +128,35 @@ class Vehicle(ABC):
     
     def get_last_maintenance_mileage(self):
         return self.__last_maintenance_mileage
+    
+
+def vehicle_from_csv_line(line):
+    from VEHICLES.CAR.car import Car
+    from VEHICLES.MOTORBIKE.motorbike import Motorbike
+    from VEHICLES.TRUCK.truck import Truck
+
+    parts = line.strip().split(",")
+
+    vehicle_type = parts[0]
+    brand = parts[1]
+    color = parts[2]
+    license_plate = parts[3]
+    model = parts[4]
+    matriculation_date = date.fromisoformat(parts[5])
+    mileage = int(parts[6])
+
+    if vehicle_type == "Car":
+        vehicle = Car(brand, color, license_plate, model, matriculation_date, mileage)
+    elif vehicle_type == "Motorbike":
+        vehicle = Motorbike(brand, color, license_plate, model, matriculation_date, mileage)
+    elif vehicle_type == "Truck":
+        vehicle = Truck(brand, color, license_plate, model, matriculation_date, mileage)
+    else:
+        raise ValueError("Invalid vehicle type")
+
+    if len(parts) > 8 and parts[7] != "" and parts[8] != "":
+        last_maintenance_date = date.fromisoformat(parts[7])
+        last_maintenance_mileage = int(parts[8])
+        vehicle.register_maintenance(last_maintenance_date, last_maintenance_mileage)
+
+    return vehicle
